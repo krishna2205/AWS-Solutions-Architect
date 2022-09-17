@@ -1,0 +1,21 @@
+Mount of EBS Volume with file sytstem 
+
+steps :
+
+lsblk
+sudo file -s /dev/xvdb   #(there is no data) if output is data
+
+#create file system
+
+sudo mkfs -t ext4 /dev/xvdb
+
+#create mount point device
+
+sudo mkdir /data
+sudo mount /dev/xvdb /data
+
+lsblk
+
+sudo file -s /dev/xvdb
+
+

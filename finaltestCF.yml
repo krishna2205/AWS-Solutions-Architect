@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template to Create an EC2 instance in a VPC
+   
+Parameters:
+
+  ImageId:
+    Type: String
+    Description: 'Linux 2 AMI for N.Virginia us-east-1 Region'
+    Default: ' ami-0dba4dc4eba630720'
+  VpcId:
+    Type: String
+    Description: VPC id
+    Default: vpc-03ade613ac824234a
+  SubnetId:
+    Type: String
+    Description: Subnet in which to launch an EC2
+    Default: subnet-093a5bdd4430a2d28
+  AvailabilityZone:
+    Type: String
+    Description: Availability Zone into which instance will launch
+    Default: us-east-1a
+  InstanceType:
+    Type: String
+    Description: Choosing  t2 large
+    Default: t2.large
+  KeyName:
+    Description: SSH Keypair to login to the instance
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: EMRDEV
+
+Resources:
+  ELKdemoInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties: 
+      ImageId: !Ref ImageId
+      InstanceType: !Ref InstanceType
+      AvailabilityZone: !Ref AvailabilityZone
+      KeyName: !Ref KeyName
+      SubnetId: !Ref SubnetId
+      #SecurityGroups:
+      #- Ref: InstanceSecurityGroup
+      #SecurityGroupIds:
+              #- sg-00722614c9a57ec19
+      Tags:
+        - Key: Name
+          Value: Elktest
+      
+
+
+  ELKElasticIP:
+    Type: AWS::EC2::EIP
+    Properties: 
+      Domain: Vpc
+      InstanceId: !Ref ELKdemoInstance
+      #PublicIpv4Pool: String
+      #Tags: 
+       # - ELKTest
+
+
+
+            
+
+    #InstanceSecurityGroup:
+     # Type: AWS::EC2::SecurityGroup
+     # Properties:
+       # GroupDescription: Existing Groups
+        #SecurityGroupIds:
+         # - Ref: sg-04c1a2155b24dbc77s
+          
+
+  #DemoSecurityGroup:
+    #Type: 'AWS::EC2::SecurityGroup'
+    #Properties:
+     # VpcId: !Ref VpcId
+      #GroupDescription: SG to allow SSH access via port 22
+      #SecurityGroupIngress:
+       # - IpProtocol: tcp
+        #  FromPort: '22'
+         # ToPort: '22'
+         # CidrIp: '0.0.0.0/0'
+      #Tags:
+        #- Key: Name
+         # Value: SSH-SG
+Outputs:
+  ELKdemoInstanceId:
+    Description: Instance Id 
+    Value: !Ref ELKdemoInstance
+  
